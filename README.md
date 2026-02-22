@@ -1,190 +1,219 @@
-# 🐭 Algorithm Rat
+# 🌑🐭 ALGORITHM RAT
 
-> A real-time 2D AI pathfinding game built with Java Swing.
-> Watch a rat navigate a braided maze to reach the cheese — using four different algorithms side by side.
+<p align="center">
+  <img src="assets/logo.png" width="180" alt="Algorithm Rat Logo"/>
+</p>
 
----
+<p align="center">
+  <img src="https://img.shields.io/badge/Java-11+-0f0f0f?style=for-the-badge&logo=java&logoColor=white"/>
+  <img src="https://img.shields.io/badge/Swing-Graphics2D-0f0f0f?style=for-the-badge"/>
+  <img src="https://img.shields.io/badge/FPS-60-0f0f0f?style=for-the-badge"/>
+  <img src="https://img.shields.io/badge/License-MIT-0f0f0f?style=for-the-badge"/>
+</p>
 
-## 📸 Overview
-
-**Algorithm Rat** is an animated, game-loop-driven pathfinding visualizer. It is **not** a button-grid demo — the rat moves smoothly through pixel space at 60 FPS, driven by delta-time physics.
-
-Select an algorithm, press **START**, and observe:
-- Visited cells glowing and fading in real time
-- The rat walking (legs, head bob, tail sway) along the found path
-- Statistics counting up live on the right panel
-- Algorithm comparison table highlighting the best and worst performers
-
----
-
-## 🎮 How to Play
-
-| Button | Action |
-|---|---|
-| **▶ START** | Run the selected algorithm and animate the rat |
-| **↺ RESET** | Return rat to start, clear path and stats |
-| **⚙ NEW MAZE** | Generate a fresh braided maze |
-| **Algorithm dropdown** | Switch between DFS / BFS / Dijkstra / A* |
-| **Rat Speed slider** | Adjust movement speed (40 – 280 px/s) |
+<p align="center">
+  <b>A Real-Time 2D AI Pathfinding Game Engine</b><br>
+  Watch a rat navigate a braided maze using classic algorithms — rendered at 60 FPS.
+</p>
 
 ---
 
-## 🧠 Algorithms
+## 🌌 Preview
 
-| Algorithm | Optimal? | Tile Weights | Characteristic Behaviour |
-|---|---|---|---|
-| **A\*** | ✓ | Yes | Heuristic-guided, fewest nodes explored |
-| **BFS** | ✓ (hops) | No | Uniform wave, fewest steps regardless of cost |
-| **Dijkstra** | ✓ (cost) | Yes | Avoids mud & water, finds lowest-cost path |
-| **DFS** | ✗ | No | Wanders, backtracks, usually finds a long path |
+<p align="center">
+  <img src="assets/demo.gif" width="700" alt="Algorithm Rat Gameplay"/>
+</p>
 
-Because the maze is **braided** (multiple valid routes exist), each algorithm genuinely picks a different path, making the comparison meaningful.
-
----
-
-## 🗺️ Maze & Tile Types
-
-**Size:** 25 × 25 grid  
-**Generation:** Recursive-backtracking DFS → braiding pass (≈18 % wall removal)
-
-| Tile | Colour | Movement Cost |
-|---|---|---|
-| Floor | Dark blue-grey | 1 |
-| Mud | Brown + texture | 5 |
-| Water | Animated blue | 10 |
-| Wall | Dark bevel block | Impassable |
-| Visited | Blue radial glow | — |
-| Path | Green → yellow trail | — |
+> Not a static grid demo.  
+> Not a button-based tracer.  
+> A fully animated game-loop simulation.
 
 ---
 
-## 📊 Statistics Panel
+# 🎮 Features
 
-After each run the right panel shows:
-
-- **Algorithm name**
-- **Nodes explored** (animated count-up)
-- **Path steps** (animated count-up)
-- **Total weighted cost** (animated count-up)
-- **Execution time** in ms
-- **Optimal?** yes / no
-
-The **Comparison Table** tracks all four algorithms across runs and highlights the **best cost in green** and **worst cost in red**.
+- 🐀 Smooth pixel-space movement (delta-time physics)
+- ✨ Animated visited-node glow with fade-out
+- 📊 Real-time statistics panel
+- 🏆 Algorithm comparison leaderboard
+- 🧠 Four classic search algorithms
+- 🔁 Braided maze (multiple valid paths)
+- 🧩 Clean architecture with zero UI coupling in algorithms
+- 🎥 Fixed 60 FPS game loop
 
 ---
 
-## 🏗️ Project Architecture
+# 🧠 Algorithms Implemented
 
-```
+| Algorithm  | Optimal | Weighted | Behaviour |
+|------------|----------|-----------|------------|
+| **A\***     | ✓        | ✓         | Heuristic-driven, minimal exploration |
+| **BFS**     | ✓ (steps)| ✗         | Uniform wave expansion |
+| **Dijkstra**| ✓ (cost) | ✓         | Avoids expensive terrain |
+| **DFS**     | ✗        | ✗         | Deep wandering with backtracking |
+
+Because the maze is braided, each algorithm visibly chooses a different path.
+
+---
+
+# 🗺️ Maze System
+
+### Grid Size
+`25 × 25`
+
+### Generation
+Recursive Backtracking DFS → Braiding Pass (~18% wall removal)
+
+---
+
+## 🎨 Tile Types
+
+| Tile    | Style                | Cost |
+|----------|----------------------|------|
+| Floor    | Dark checker pattern | 1    |
+| Mud      | Brown textured       | 5    |
+| Water    | Animated shimmer     | 10   |
+| Wall     | Beveled 3D block     | ∞    |
+| Visited  | Blue radial glow     | —    |
+| Path     | Green → Yellow trail | —    |
+
+---
+
+# 📊 Live Statistics Panel
+
+After each run:
+Algorithm: A*
+Nodes Explored: 143
+Path Steps: 36
+Total Cost: 41
+Execution Time: 3 ms
+Optimal: YES
+
+
+### Comparison Table
+
+- 🟢 Best cost highlighted
+- 🔴 Worst cost highlighted
+
+---
+
+# 🏗️ Project Architecture
 RATMAZE/src/
 ├── main/
-│   └── MainFrame.java          ← Entry point & JFrame assembly
+│ └── MainFrame.java
 │
 ├── engine/
-│   ├── GameLoop.java           ← Fixed 60 FPS loop, delta time
-│   ├── GamePanel.java          ← Double-buffered Graphics2D renderer
-│   ├── Camera.java             ← Viewport centering
-│   └── InputHandler.java       ← Keyboard / mouse events
+│ ├── GameLoop.java
+│ ├── GamePanel.java
+│ ├── Camera.java
+│ └── InputHandler.java
 │
 ├── maze/
-│   ├── TileType.java           ← WALL / NORMAL / MUD / WATER + costs
-│   ├── Maze.java               ← Grid data, visited tracking, neighbour lookup
-│   └── MazeGenerator.java      ← DFS carver + braiding pass
+│ ├── TileType.java
+│ ├── Maze.java
+│ └── MazeGenerator.java
 │
 ├── entities/
-│   ├── Entity.java             ← Base class (pixel + tile position)
-│   ├── Rat.java                ← Walking legs, head bob, breathing, tail, trail
-│   └── Cheese.java             ← Triangular wedge, glow pulse, spin celebration
+│ ├── Entity.java
+│ ├── Rat.java
+│ └── Cheese.java
 │
 ├── algorithms/
-│   ├── PathFinder.java         ← Interface: findPath() + stats getters
-│   ├── AStarPathFinder.java    ← A* with Manhattan heuristic
-│   ├── BFSPathFinder.java      ← Breadth-first search
-│   ├── DijkstraPathFinder.java ← Priority-queue Dijkstra
-│   └── DFSPathFinder.java      ← Iterative depth-first search
+│ ├── PathFinder.java
+│ ├── AStarPathFinder.java
+│ ├── BFSPathFinder.java
+│ ├── DijkstraPathFinder.java
+│ └── DFSPathFinder.java
 │
 └── ui/
-    ├── ControlPanel.java       ← Left panel: controls & legend
-    └── StatsPanel.java         ← Right panel: stat cards & comparison table
-```
+├── ControlPanel.java
+└── StatsPanel.java 
 
-### Key design principles
-
-- **Algorithms are fully decoupled from rendering.** They run synchronously, return a `List<Point>`, and never call any UI code.
-- **Game loop drives all animation.** No `Thread.sleep` inside entities or algorithms.
-- **Delta time** ensures movement is frame-rate independent.
-- **Double-buffered rendering** via `BufferedImage` prevents flicker.
 
 ---
 
-## ⚙️ Build & Run
+# 🧩 Design Principles
 
-### Requirements
-- **Java 11 or higher** — [Download Temurin JDK](https://adoptium.net/)
+- Algorithms fully decoupled from rendering
+- Game loop controls all animation
+- No `Thread.sleep` inside entities
+- Delta-time ensures frame-rate independence
+- Double-buffered rendering prevents flicker
+- Clean separation between engine, maze, entities, and UI
 
-### Check Java version
-```powershell
-java -version
-```
+---
 
-### Compile + Run (one command)
-```powershell
+# 🎥 Visual Highlights
+
+- 🌌 90-star animated background
+- 🌊 Dual sine-wave water animation
+- 🧱 Bevel-lit walls
+- 🌱 Deterministic mud textures
+- 🐀 Fully vector-drawn animated rat
+- 🧀 Spinning cheese celebration
+- ✨ Radial visited glow
+
+---
+
+# ⚙️ Build & Run
+
+## Requirements
+Java 11+
+
+## Check Version
+``powershell
+java -version 
+
+Compile & Run
 cd "c:\Users\tusar\OneDrive\Desktop\RATMAZE"
 javac -d out -sourcepath src (Get-ChildItem -Recurse -Filter "*.java" src | Select-Object -ExpandProperty FullName)
 java -cp out main.MainFrame
-```
 
-### After the first compile, just run:
-```powershell
+After first compile:
+
 java -cp "c:\Users\tusar\OneDrive\Desktop\RATMAZE\out" main.MainFrame
-```
 
-> Only recompile when source files change.
+Recompile only when source files change.
 
----
+🔧 Configuration
+Constant	File	Default
+BRAID_CHANCE	MazeGenerator.java	0.18
+TILE_SIZE	Maze.java	28
+TARGET_FPS	GameLoop.java	60
+FLASH_FADE_MS	GamePanel.java	1200
+TRAIL_MAX	Rat.java	16
+➕ Add a New Algorithm
 
-## 🔧 Configuration
+Implement:
 
-| Constant | File | Default | Effect |
-|---|---|---|---|
-| `BRAID_CHANCE` | `MazeGenerator.java` | `0.18` | Wall removal rate (0.10 = sparse loops, 0.30 = many loops) |
-| `TILE_SIZE` | `Maze.java` | `28` | Pixel size of each grid cell |
-| `TARGET_FPS` | `GameLoop.java` | `60` | Render / update rate |
-| `FLASH_FADE_MS` | `GamePanel.java` | `1200` | Duration of visited-cell glow |
-| `TRAIL_MAX` | `Rat.java` | `16` | Length of the rat's motion trail |
-
----
-
-## 📐 Algorithm Interface
-
-All pathfinders implement `PathFinder`:
-
-```java
 public interface PathFinder {
     List<Point> findPath(Maze maze, Point start, Point goal);
-    String  getName();
-    int     getNodesExplored();
-    long    getExecutionTimeMs();
+    String getName();
+    int getNodesExplored();
+    long getExecutionTimeMs();
     boolean isOptimal();
 }
-```
 
-To add a new algorithm, create a class implementing `PathFinder` and add it to the `finders[]` array in `ControlPanel.java`.
+Register it inside ControlPanel.java.
 
----
+🚀 Why This Project Stands Out
 
-## 🎨 Visual Features
+Real-time simulation architecture
 
-- **Starfield background** — 90 twinkling stars, sine-wave brightness
-- **Checker floor** — alternating dark shades per tile
-- **Bevel walls** — bright top-left edge, dark bottom-right edge, inner shadow
-- **Mud texture** — 3 deterministic oval clumps per cell (seeded by position)
-- **Animated water** — dual sine-wave colour shift + shimmer stripe
-- **Rat character** — vector-drawn with walking legs, bezier tail, whiskers, specular eyes
-- **Cheese** — `Path2D` triangle wedge with gradient, rimmed holes, spin on arrival
+Game-engine-style loop
 
----
+Proper delta-time physics
 
-## 📄 License
+Clean algorithm abstraction
+
+Meaningful performance comparison
+
+Visually polished beyond academic demos
+
+Extendable for future AI strategies
+
+🖤 License
 
 MIT — free to use, modify, and distribute.
+
+<p align="center"> <b>Built for learning. Designed like a game engine.</b><br> 🌑🐭✨ </p> ```
