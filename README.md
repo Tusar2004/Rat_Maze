@@ -1,7 +1,7 @@
 # 🌑🐭 ALGORITHM RAT
 
 <p align="center">
-  <img src="assets/logo.png" width="180" alt="Algorithm Rat Logo"/>
+  <img src="https://media.giphy.com/media/l0HlBO7eyXzSZkJri/giphy.gif" width="180" alt="Animated Rat Logo"/>
 </p>
 
 <p align="center">
