@@ -25,8 +25,9 @@ public class MainFrame extends JFrame {
         StatsPanel statsPanel = new StatsPanel();
         ControlPanel ctrlPanel = new ControlPanel(gamePanel, gameLoop);
 
-        // Wire stats panel into game panel
+        // Wire stats panel and parent frame into game panel
         gamePanel.setStatsPanel(statsPanel);
+        gamePanel.setParentFrame(this);
 
         // Layout: [ControlPanel | GamePanel | StatsPanel]
         setLayout(new BorderLayout());

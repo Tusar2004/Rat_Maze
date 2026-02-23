@@ -6,6 +6,7 @@ import maze.*;
 import ui.*;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
 import java.awt.image.BufferedImage;
@@ -41,6 +42,13 @@ public class GamePanel extends JPanel {
 
     // ── Stats panel ref ───────────────────────────────────────────────────────
     private StatsPanel statsPanel;
+
+    // ── Parent frame ref (for popup centering) ────────────────────────────────
+    private JFrame parentFrame;
+
+    // ── Popup guard flags (only show once per run) ────────────────────────────
+    private boolean goalPopupShown = false;
+    private boolean noPathPopupShown = false;
 
     // ── Path reveal animation ─────────────────────────────────────────────────
     private float pathRevealT = 0;
@@ -100,6 +108,10 @@ public class GamePanel extends JPanel {
         this.statsPanel = sp;
     }
 
+    public void setParentFrame(JFrame frame) {
+        this.parentFrame = frame;
+    }
+
     // ─────────────────────────────────────────────────────────────────────────
     // Public API
     // ─────────────────────────────────────────────────────────────────────────
@@ -134,6 +146,10 @@ public class GamePanel extends JPanel {
             state = State.NO_PATH;
             if (statsPanel != null)
                 statsPanel.showNoPath(currentFinder);
+            if (!noPathPopupShown) {
+                noPathPopupShown = true;
+                SwingUtilities.invokeLater(this::showNoPathPopup);
+            }
             return;
         }
 
@@ -169,6 +185,8 @@ public class GamePanel extends JPanel {
 
     public void reset() {
         state = State.IDLE;
+        goalPopupShown = false;
+        noPathPopupShown = false;
         maze.resetVisited();
         visitedFlashTimes.clear();
         currentPath.clear();
@@ -193,6 +211,10 @@ public class GamePanel extends JPanel {
             cheese.startCelebration();
             if (statsPanel != null) {
                 statsPanel.showArrived(currentFinder, currentPath.size(), lastPathCost);
+            }
+            if (!goalPopupShown) {
+                goalPopupShown = true;
+                SwingUtilities.invokeLater(this::showGoalPopup);
             }
         }
 
@@ -485,5 +507,119 @@ public class GamePanel extends JPanel {
 
     public State getGameState() {
         return state;
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // Popup dialogs
+    // ─────────────────────────────────────────────────────────────────────────
+
+    private void showGoalPopup() {
+        JDialog dlg = new JDialog(parentFrame, "Goal Reached", true);
+        dlg.setUndecorated(true);
+        dlg.setBackground(new Color(0, 0, 0, 0));
+
+        JPanel content = buildPopupPanel(
+                "🏆  Goal Reached!",
+                "The rat found the cheese!",
+                new Color(20, 60, 35),
+                new Color(60, 220, 110),
+                new Color(40, 180, 90));
+        dlg.setContentPane(content);
+        dlg.pack();
+        dlg.setLocationRelativeTo(parentFrame);
+        dlg.setVisible(true);
+    }
+
+    private void showNoPathPopup() {
+        JDialog dlg = new JDialog(parentFrame, "No Path", true);
+        dlg.setUndecorated(true);
+        dlg.setBackground(new Color(0, 0, 0, 0));
+
+        JPanel content = buildPopupPanel(
+                "❌  NO PATH FOUNDED",
+                "No route exists in this maze.",
+                new Color(60, 18, 18),
+                new Color(255, 80, 80),
+                new Color(200, 45, 45));
+        dlg.setContentPane(content);
+        dlg.pack();
+        dlg.setLocationRelativeTo(parentFrame);
+        dlg.setVisible(true);
+    }
+
+    /**
+     * Builds a dark-themed, rounded popup panel.
+     */
+    private JPanel buildPopupPanel(String title, String subtitle,
+            Color bgColor, Color accentColor, Color btnColor) {
+        JPanel panel = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                        RenderingHints.VALUE_ANTIALIAS_ON);
+                // Outer glow shadow
+                g2.setColor(new Color(0, 0, 0, 120));
+                g2.fillRoundRect(4, 4, getWidth() - 4, getHeight() - 4, 20, 20);
+                // Main background
+                g2.setColor(bgColor);
+                g2.fillRoundRect(0, 0, getWidth() - 4, getHeight() - 4, 20, 20);
+                // Accent border
+                g2.setColor(accentColor);
+                g2.setStroke(new BasicStroke(2f));
+                g2.drawRoundRect(1, 1, getWidth() - 6, getHeight() - 6, 18, 18);
+                g2.dispose();
+            }
+        };
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        panel.setOpaque(false);
+        panel.setBorder(new EmptyBorder(28, 40, 24, 40));
+
+        // Title label
+        JLabel titleLbl = new JLabel(title);
+        titleLbl.setFont(new Font("Segoe UI", Font.BOLD, 22));
+        titleLbl.setForeground(accentColor);
+        titleLbl.setAlignmentX(CENTER_ALIGNMENT);
+        panel.add(titleLbl);
+        panel.add(Box.createVerticalStrut(8));
+
+        // Subtitle
+        JLabel subLbl = new JLabel(subtitle);
+        subLbl.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+        subLbl.setForeground(new Color(200, 220, 200));
+        subLbl.setAlignmentX(CENTER_ALIGNMENT);
+        panel.add(subLbl);
+        panel.add(Box.createVerticalStrut(20));
+
+        // OK button
+        JButton okBtn = new JButton("  OK  ") {
+            @Override
+            protected void paintComponent(Graphics g) {
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                        RenderingHints.VALUE_ANTIALIAS_ON);
+                Color c = getModel().isRollover() ? btnColor.brighter()
+                        : getModel().isPressed() ? btnColor.darker() : btnColor;
+                g2.setPaint(new GradientPaint(0, 0, c.brighter(), 0, getHeight(), c.darker()));
+                g2.fillRoundRect(0, 0, getWidth() - 1, getHeight() - 1, 10, 10);
+                g2.setColor(new Color(255, 255, 255, 40));
+                g2.drawRoundRect(0, 0, getWidth() - 2, getHeight() - 2, 10, 10);
+                g2.dispose();
+                super.paintComponent(g);
+            }
+        };
+        okBtn.setForeground(Color.WHITE);
+        okBtn.setFont(new Font("Segoe UI", Font.BOLD, 13));
+        okBtn.setFocusPainted(false);
+        okBtn.setBorderPainted(false);
+        okBtn.setContentAreaFilled(false);
+        okBtn.setOpaque(false);
+        okBtn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        okBtn.setAlignmentX(CENTER_ALIGNMENT);
+        okBtn.setMaximumSize(new Dimension(120, 36));
+        okBtn.addActionListener(e -> SwingUtilities.getWindowAncestor(okBtn).dispose());
+        panel.add(okBtn);
+
+        return panel;
     }
 }

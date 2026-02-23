@@ -64,6 +64,19 @@ public class MazeGenerator {
                 }
             }
         }
+
+        // ── Phase 5 (30% chance): Make maze unsolvable by sealing the goal ────
+        // Wall off every open neighbour of the goal tile, creating a wall ring.
+        if (random.nextDouble() < 0.30) {
+            int gr = goal.y, gc = goal.x;
+            int[][] dirs = { { -1, 0 }, { 1, 0 }, { 0, -1 }, { 0, 1 } };
+            for (int[] d : dirs) {
+                int nr = gr + d[0], nc = gc + d[1];
+                if (nr >= 0 && nr < rows && nc >= 0 && nc < cols) {
+                    maze.setTile(nr, nc, TileType.WALL);
+                }
+            }
+        }
     }
 
     // ── Phase 2 helper: recursive DFS carver ─────────────────────────────────
