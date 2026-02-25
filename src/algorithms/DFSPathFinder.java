@@ -1,14 +1,9 @@
 package algorithms;
 
-import maze.Maze;
 import java.awt.Point;
 import java.util.*;
+import maze.Maze;
 
-/**
- * Depth-First Search pathfinder.
- * Behavior: deep wandering, backtracking, NOT guaranteed optimal.
- * Demonstrates the "lost in a maze" feel.
- */
 public class DFSPathFinder implements PathFinder {
 
     private int nodesExplored = 0;

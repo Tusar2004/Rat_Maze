@@ -1,14 +1,9 @@
 package algorithms;
 
-import maze.Maze;
 import java.awt.Point;
 import java.util.*;
+import maze.Maze;
 
-/**
- * A* (A-Star) pathfinder with Manhattan-distance heuristic.
- * Optimal and efficient, considers tile weights.
- * Dramatically fewer nodes explored vs Dijkstra on large open mazes.
- */
 public class AStarPathFinder implements PathFinder {
 
     private int nodesExplored = 0;

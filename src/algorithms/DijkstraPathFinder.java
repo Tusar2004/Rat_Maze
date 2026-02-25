@@ -4,11 +4,6 @@ import maze.Maze;
 import java.awt.Point;
 import java.util.*;
 
-/**
- * Dijkstra's algorithm pathfinder.
- * Considers tile weights (NORMAL=1, MUD=5, WATER=10).
- * Optimal weighted shortest path.
- */
 public class DijkstraPathFinder implements PathFinder {
 
     private int nodesExplored = 0;
